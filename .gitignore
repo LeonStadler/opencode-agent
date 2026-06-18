@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# OpenCode runtime (in Zielprojekten, nicht in diesem Template-Repo)
+.opencode/.cache/
+.opencode/state/
+
+# Logs & temp
+*.log
+tmp/
+temp/
+
+# Node (falls Skills-CLI oder lokale Scripts genutzt werden)
+node_modules/
+.npm/
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo

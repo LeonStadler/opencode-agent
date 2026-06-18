@@ -1,0 +1,33 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "Coordinator",
+  "instructions": [
+    "AGENTS.md",
+    ".opencode/rules/*.md"
+  ],
+  "permission": {
+    "skill": {
+      "*": "allow",
+      "parallel-bug-audit": "allow"
+    },
+    "task": "allow"
+  },
+  "agent": {
+    "build": {
+      "disable": true
+    },
+    "plan": {
+      "disable": true
+    },
+    "Coordinator": {
+      "permission": {
+        "task": {
+          "*": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        }
+      }
+    }
+  }
+}
