@@ -3,6 +3,7 @@
 .AppleDouble
 .LSOverride
 ._*
+**/.DS_Store
 
 # Editor / IDE
 .idea/
@@ -10,6 +11,7 @@
 *.swp
 *.swo
 *~
+.cursor/
 
 # Environment & secrets
 .env
@@ -19,16 +21,18 @@
 *.key
 credentials.json
 
-# OpenCode runtime (in Zielprojekten, nicht in diesem Template-Repo)
-.opencode/.cache/
-.opencode/state/
+# OpenCode runtime (falls install.sh projektspezifisch in dieses Repo läuft)
+.opencode/
+opencode.json
+opencode.jsonc
 
 # Logs & temp
 *.log
 tmp/
 temp/
+*.tmp
 
-# Node (falls Skills-CLI oder lokale Scripts genutzt werden)
+# Node
 node_modules/
 .npm/
 

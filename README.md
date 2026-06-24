@@ -2,6 +2,13 @@
 
 Wiederverwendbare **Agents**, **Rules** und **Skills** für [OpenCode](https://opencode.ai) — orchestriert über den **Coordinator** als zentrale Schnittstelle für Research, Planung, Audit und Ausführung.
 
+```bash
+bash install.sh          # installieren
+bash uninstall.sh        # alles wieder entfernen
+```
+
+OpenCode neu starten → `@Coordinator` nutzen.
+
 ## Architektur
 
 ```mermaid
@@ -18,9 +25,9 @@ flowchart TB
     Coordinator --> BugAuditSkill[parallel-bug-audit Skill]
     BugAuditSkill --> Researcher
 
-    Rules[".opencode/rules/"] --> Coordinator
+    Rules["rules/"] --> Coordinator
     Rules --> SoftwareEngineer
-    Skills[".opencode/skills/"] --> Coordinator
+    Skills["skills/"] --> Coordinator
 ```
 
 **Grundprinzip:** Starte **immer** mit `@Coordinator`. Er untersucht, plant, delegiert und verifiziert — du sprichst nicht direkt mit Implementierungs-Subagents, außer für gezielte Read-only-Research.
@@ -35,59 +42,53 @@ flowchart TB
 
 ---
 
+## Installation
+
+Ein Befehl — kopiert **alle Agents, Rules und Skills** aus diesem Repo nach OpenCode.
+
+### Global (empfohlen — gilt in allen Projekten)
+
+```bash
+bash install.sh
+```
+
+Installiert nach `~/.config/opencode/`:
+
+- `agents/` — alle Agent-Definitionen
+- `rules/` — Coding-Konventionen
+- `skills/` — alle Skills (z. B. `parallel-bug-audit`)
+- `opencode.jsonc` + `AGENTS.md` — Coordinator als Default
+
+### Projektspezifisch
+
+```bash
+bash install.sh /pfad/zu/deinem-projekt
+```
+
+Installiert nach `.opencode/` im Zielprojekt + legt `opencode.json` an.
+
+### Update
+
+Einfach nochmal ausführen — überschreibt die bestehenden Dateien:
+
+```bash
+bash install.sh
+```
+
+**Deinstallieren** (sauberer Reset vor Neuinstallation):
+
+```bash
+bash uninstall.sh
+```
+
+Danach **OpenCode neu starten** und mit `@Coordinator` loslegen.
+
+---
+
 ## Voraussetzungen
 
 1. [OpenCode installiert](https://opencode.ai/docs) (Terminal, Desktop oder IDE)
 2. Mindestens ein LLM-Provider konfiguriert (`/connect` in der TUI)
-3. Git-Repository für dein Zielprojekt
-
----
-
-## Installation
-
-Es gibt zwei Wege: **global** (alle Projekte) oder **projektspezifisch** (empfohlen für Teams).
-
-### Option A — Projektspezifisch (empfohlen)
-
-Im Root deines Zielprojekts:
-
-```bash
-# 1. OpenCode-Verzeichnis anlegen
-mkdir -p .opencode/agents .opencode/rules .opencode/skills .opencode/state
-
-# 2. Agents kopieren
-cp -R /pfad/zu/opencode-agent/agents/* .opencode/agents/
-
-# 3. Rules kopieren
-cp -R /pfad/zu/opencode-agent/rules/* .opencode/rules/
-
-# 4. Bug-Audit-Skill kopieren (Ordnername MUSS dem Skill-Namen entsprechen)
-cp -R /pfad/zu/opencode-agent/bug-and-gap-audit .opencode/skills/parallel-bug-audit
-
-# 5. Beispiel-Konfiguration übernehmen und anpassen
-cp /pfad/zu/opencode-agent/opencode.json.example opencode.json
-```
-
-Alternativ per Symlink (Updates aus diesem Repo propagieren sich automatisch):
-
-```bash
-ln -s /pfad/zu/opencode-agent/agents .opencode/agents
-ln -s /pfad/zu/opencode-agent/rules .opencode/rules
-ln -s /pfad/zu/opencode-agent/bug-and-gap-audit .opencode/skills/parallel-bug-audit
-```
-
-### Option B — Global
-
-Für persönliche Nutzung über alle Projekte:
-
-```bash
-mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills
-
-cp -R /pfad/zu/opencode-agent/agents/* ~/.config/opencode/agents/
-cp -R /pfad/zu/opencode-agent/bug-and-gap-audit ~/.config/opencode/skills/parallel-bug-audit
-```
-
-Rules sind projektspezifisch — kopiere sie **nicht** global, sondern pro Projekt nach `.opencode/rules/`.
 
 ---
 
@@ -171,13 +172,7 @@ Der Coordinator und Software Engineer referenzieren Rules automatisch in Delegat
 
 Paralleler Bug-/Gap-Audit: Coordinator mappt ein Subsystem, erstellt ein Failure-Mode-Brief, dispatcht mehrere `@Researcher`-Instanzen parallel und konsolidiert die Findings.
 
-**Installation:**
-
-```bash
-cp -R bug-and-gap-audit .opencode/skills/parallel-bug-audit
-```
-
-> Der Ordnername **muss** `parallel-bug-audit` heißen — das entspricht dem `name`-Feld in `SKILL.md`.
+**Installation:** automatisch via `bash install.sh` (liegt in `skills/parallel-bug-audit/`).
 
 **Permissions in `opencode.json`:**
 
@@ -208,34 +203,15 @@ Der Coordinator lädt den Skill, dispatcht parallel Researcher und liefert einen
 
 ---
 
-## `opencode.json` — vollständige Referenz
+## Konfiguration
 
-Kopiere `opencode.json.example` ins Projekt-Root und passe an:
+Wird automatisch von `install.sh` gesetzt. Templates liegen in `templates/`:
 
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "default_agent": "Coordinator",
-  "instructions": ["AGENTS.md", ".opencode/rules/*.md"],
-  "permission": {
-    "skill": {
-      "*": "allow",
-      "parallel-bug-audit": "allow"
-    },
-    "task": "allow"
-  },
-  "agent": {
-    "build": { "disable": true },
-    "plan": { "disable": true },
-    "Coordinator": {
-      "permission": {
-        "task": { "*": "allow" },
-        "skill": { "*": "allow" }
-      }
-    }
-  }
-}
-```
+| Datei                             | Verwendung                                   |
+| --------------------------------- | -------------------------------------------- |
+| `templates/opencode.global.jsonc` | Global → `~/.config/opencode/opencode.jsonc` |
+| `templates/opencode.project.json` | Projekt → `opencode.json`                    |
+| `templates/AGENTS.md`             | Globale/Projekt-Regeln                       |
 
 ---
 
@@ -311,45 +287,48 @@ Coordinator delegiert an Researcher, gibt strukturierten Report zurück — ohne
 
 ## Enthaltene Agents
 
-| Agent                      | Mode       | Beschreibung                   |
-| -------------------------- | ---------- | ------------------------------ |
-| **Coordinator**            | `primary`  | Orchestriert den gesamten SDLC |
-| **Researcher**             | `all`      | Read-only Codebase-Recherche   |
-| **Software Engineer**      | `subagent` | Implementierung                |
-| **Code Reviewer**          | `subagent` | Code-Review                    |
-| **Security Auditor**       | `subagent` | Sicherheits-Audit              |
-| **DevOps Engineer**        | `subagent` | Infrastruktur & CI/CD          |
-| **QA Automation Engineer** | `subagent` | Test-Automatisierung           |
-| **Technical Writer**       | `subagent` | Dokumentation                  |
-| **Doc Reviewer**           | `subagent` | Dokumentations-Review          |
-| **PRD Critic**             | `subagent` | PRD-Analyse                    |
+| Agent                      | Mode       | Beschreibung                                            |
+| -------------------------- | ---------- | ------------------------------------------------------- |
+| **Coordinator**            | `primary`  | Orchestriert den gesamten SDLC — **einziger Tab-Agent** |
+| **Researcher**             | `subagent` | Read-only Codebase-Recherche (`@Researcher`)            |
+| **Software Engineer**      | `subagent` | Implementierung                                         |
+| **Code Reviewer**          | `subagent` | Code-Review                                             |
+| **Security Auditor**       | `subagent` | Sicherheits-Audit                                       |
+| **DevOps Engineer**        | `subagent` | Infrastruktur & CI/CD                                   |
+| **QA Automation Engineer** | `subagent` | Test-Automatisierung                                    |
+| **Technical Writer**       | `subagent` | Dokumentation                                           |
+| **Doc Reviewer**           | `subagent` | Dokumentations-Review                                   |
+| **PRD Critic**             | `subagent` | PRD-Analyse                                             |
 
 ---
 
 ## Troubleshooting
 
-| Problem                                    | Lösung                                                                            |
-| ------------------------------------------ | --------------------------------------------------------------------------------- |
-| Coordinator nicht in Agent-Liste           | OpenCode neu starten; prüfen ob `.opencode/agents/Coordinator.md` existiert       |
-| Skill nicht sichtbar                       | Ordner muss `parallel-bug-audit` heißen; `SKILL.md` in CAPS; OpenCode neu starten |
-| Researcher kann nicht dispatched werden    | `task: allow` in Coordinator-Permissions setzen                                   |
-| Rules werden ignoriert                     | `instructions` in `opencode.json` prüfen; Pfade relativ zum Projekt-Root          |
-| Falsches Modell                            | `model:` in Agent-Frontmatter an verfügbare Provider anpassen                     |
-| Built-in `build` startet statt Coordinator | `default_agent: "Coordinator"` setzen; `build`/`plan` disable                     |
+| Problem                                    | Lösung                                                                                                                                      |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nur Coordinator in der Tab-Leiste sichtbar | **Normal.** Tab zeigt nur `primary`-Agents. Subagents via `@Software Engineer`, `@Researcher` etc. — oder Coordinator delegiert automatisch |
+| Welche Agents sind installiert?            | `opencode agent list` im Terminal                                                                                                           |
+| Coordinator nicht in Agent-Liste           | OpenCode neu starten; `bash install.sh` erneut ausführen                                                                                    |
+| Skill nicht sichtbar                       | Ordner muss `parallel-bug-audit` heißen; `SKILL.md` in CAPS; OpenCode neu starten                                                           |
+| Researcher kann nicht dispatched werden    | `task: allow` in Coordinator-Permissions setzen                                                                                             |
+| Rules werden ignoriert                     | `instructions` in `opencode.json` prüfen; Pfade relativ zum Projekt-Root                                                                    |
+| Falsches Modell                            | `model:` in Agent-Frontmatter an verfügbare Provider anpassen                                                                               |
+| Built-in `build` startet statt Coordinator | `default_agent: "Coordinator"` setzen; `build`/`plan` disable                                                                               |
 
 ---
 
-## Repo-Struktur (dieses Template)
+## Repo-Struktur
 
 ```
 opencode-agent/
+├── install.sh                 # Ein-Befehl-Installation
+├── uninstall.sh               # Alles wieder entfernen
 ├── README.md
-├── opencode.json.example
 ├── agents/                    # Alle Agent-Definitionen
 ├── rules/                     # Coding-Konventionen
-└── bug-and-gap-audit/         # Skill-Quelle → installieren als parallel-bug-audit
-    ├── SKILL.md
-    └── references/
+├── skills/
+│   └── parallel-bug-audit/    # Bug-Audit-Skill
+└── templates/                 # opencode.json + AGENTS.md Vorlagen
 ```
 
 ---

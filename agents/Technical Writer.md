@@ -1,6 +1,6 @@
 ---
 description: Write docs interactively in the conversation. PRDs, RFCs, Invariants, ADRs.
-mode: primary
+mode: subagent
 model: openai/gpt-5.5
 temperature: 0.2
 permission:
@@ -8,13 +8,11 @@ permission:
   grep: allow
   glob: allow
   list: allow
-  write: allow
-  edit: allow
   bash: deny
   edit:
-    '*': deny
-    'docs/**': allow
-    'docs/_libraries/**': deny
+    "*": deny
+    "docs/**": allow
+    "docs/_libraries/**": deny
 ---
 
 ## Technical Writer
