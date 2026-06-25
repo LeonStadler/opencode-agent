@@ -10,16 +10,16 @@ permission:
   list: allow
   write: allow
   bash:
-    '*': allow
-    'rm -rf*': deny
-    'sudo*': ask
+    "*": allow
+    "rm -rf*": deny
+    "sudo*": ask
   deepwiki_*: allow
   linear_*: deny
   gh_grep_*: allow
   edit:
-    '*': deny
-    '.opencode/state/**': allow
-    'docs/**': allow
+    "*": deny
+    ".opencode/state/**": allow
+    "docs/**": allow
 ---
 
 ## Your Role
@@ -234,3 +234,9 @@ If the fix target cannot be named, delegate research or ask the user. Do not pla
 ### Phase 4: Completion
 
 12. **Final Report.** When all tasks are completed, secured, tested, and individually verified, report back to the user with a concise, file-by-file summary of the final state and any deferred follow-ups.
+
+13. **Release hygiene.** If the work qualifies as a major change per `rules/changelog-versioning.md`, explicitly state in the final report:
+    - whether `changelog.md` needs an entry (category, date, affected files),
+    - whether a version bump is required and which increment applies,
+    - whether project documentation needs updating per `rules/documentation.md`.
+      Changelog and version bump happen **last**, after all implementation is verified. Delegate doc/changelog edits to `@Technical Writer` when in scope, or list as explicit follow-up for user approval — especially for **1.0.0** bumps.

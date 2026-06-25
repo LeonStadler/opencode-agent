@@ -158,11 +158,18 @@ Rules definieren Coding-Konventionen. Sie liegen in `rules/` und werden über `o
 
 Enthaltene Rules in diesem Repo:
 
-| Datei                 | Inhalt                                            |
-| --------------------- | ------------------------------------------------- |
-| `code-styles.md`      | Allgemeine Code-Stil- und Architektur-Invarianten |
-| `react-guidelines.md` | React-spezifische Konventionen                    |
-| `testing.md`          | Test-Richtlinien                                  |
+| Datei                     | Inhalt                                       |
+| ------------------------- | -------------------------------------------- |
+| `changelog-versioning.md` | Changelog, Version-Bump, Release-Hygiene     |
+| `documentation.md`        | Projekt-Docs, Inline-Docs, `docs/`-Struktur  |
+| `code-quality.md`         | Lint, Build, DRY, Maintainability            |
+| `programming-style.md`    | FP, Typing, Funktionen (allgemein)           |
+| `code-styles.md`          | Architektur-Invarianten (projektspezifisch)  |
+| `error-handling.md`       | Fehler werfen, Kontext, Logging              |
+| `tooling.md`              | Dependencies, Projekt-Environments           |
+| `workflow.md`             | Git, Branches, Issues, Repo-Inspektion       |
+| `react-guidelines.md`     | React-spezifische Konventionen               |
+| `testing.md`              | Test-Philosophie + projektspezifische Regeln |
 
 **Zusätzlich empfohlen:** Projekt-Root `AGENTS.md` via `/init` generieren lassen. OpenCode merged `AGENTS.md` + `instructions` aus `opencode.json`.
 

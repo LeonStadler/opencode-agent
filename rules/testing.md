@@ -1,3 +1,16 @@
+# General testing philosophy
+
+1. Respect the current repository testing strategy and existing test suite.
+2. Do not add new unit tests by default.
+3. When tests are needed, prefer integration, end-to-end, or smoke tests that validate real behavior.
+4. Use unit tests only rarely — mainly for stable datasets or pure data transformations.
+5. Never add unit tests just to increase coverage numbers.
+6. Avoid mocks when real calls are practical.
+7. Prefer real API or service calls over fragile mock-based coverage when cost is reasonable.
+8. Add only the minimum test coverage needed for the requested change.
+
+# Project-specific (when applicable)
+
 1. For bugfixes, confirm the actual failing user flow against the referenced working path/file before choosing a fix or test target.
 2. Before writing tests, inspect 2-3 analogous tests in the same package and mirror their framework, file location, structure, and style.
 3. Do not introduce a new test runner, test style, or harness in a package without explicit user approval.
