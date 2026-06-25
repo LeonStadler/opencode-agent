@@ -32,13 +32,13 @@ flowchart TB
 
 **Core principle:** Always start with `@Coordinator`. It investigates, plans, delegates, and verifies — do not talk directly to implementation subagents except for targeted read-only research.
 
-| Component              | Role                                                       |
-| ---------------------- | ---------------------------------------------------------- |
-| **Coordinator**        | Primary agent — central interface for everything           |
-| **Researcher**         | Read-only subagent for codebase research                   |
-| **parallel-bug-audit** | Skill for parallel bug/gap audits via Researcher           |
-| **Rules**              | Project-wide coding conventions                            |
-| **Other subagents**    | Software Engineer, Code Reviewer, Security Auditor, …      |
+| Component              | Role                                                  |
+| ---------------------- | ----------------------------------------------------- |
+| **Coordinator**        | Primary agent — central interface for everything      |
+| **Researcher**         | Read-only subagent for codebase research              |
+| **parallel-bug-audit** | Skill for parallel bug/gap audits via Researcher      |
+| **Rules**              | Project-wide coding conventions                       |
+| **Other subagents**    | Software Engineer, Code Reviewer, Security Auditor, … |
 
 ---
 
@@ -158,18 +158,18 @@ Rules define coding conventions. They live in `rules/` and are loaded via `openc
 
 Rules included in this repo:
 
-| File                      | Content                                              |
-| ------------------------- | ---------------------------------------------------- |
-| `changelog-versioning.md` | Changelog, version bump, release hygiene             |
-| `documentation.md`        | Project docs, inline docs, `docs/` structure         |
-| `code-quality.md`         | Lint, build, DRY, maintainability                   |
-| `programming-style.md`    | FP, typing, functions (general)                      |
-| `code-styles.md`          | Architecture invariants (project-specific)           |
-| `error-handling.md`       | Raising errors, context, logging                     |
-| `tooling.md`              | Dependencies, project environments                   |
-| `workflow.md`             | Git, branches, issues, repo inspection               |
-| `react-guidelines.md`     | React-specific conventions                           |
-| `testing.md`              | Testing philosophy + project-specific rules          |
+| File                      | Content                                      |
+| ------------------------- | -------------------------------------------- |
+| `changelog-versioning.md` | Changelog, version bump, release hygiene     |
+| `documentation.md`        | Project docs, inline docs, `docs/` structure |
+| `code-quality.md`         | Lint, build, DRY, maintainability            |
+| `programming-style.md`    | FP, typing, functions (general)              |
+| `code-styles.md`          | Architecture invariants (project-specific)   |
+| `error-handling.md`       | Raising errors, context, logging             |
+| `tooling.md`              | Dependencies, project environments           |
+| `workflow.md`             | Git, branches, issues, repo inspection       |
+| `react-guidelines.md`     | React-specific conventions                   |
+| `testing.md`              | Testing philosophy + project-specific rules  |
 
 **Also recommended:** generate project-root `AGENTS.md` via `/init`. OpenCode merges `AGENTS.md` with `instructions` from `opencode.json`.
 
@@ -294,33 +294,33 @@ Coordinator delegates to Researcher, returns structured report — skips Phase 3
 
 ## Included agents
 
-| Agent                      | Mode       | Description                                      |
-| -------------------------- | ---------- | ------------------------------------------------ |
-| **Coordinator**            | `primary`  | Orchestrates the full SDLC — **only Tab agent**  |
-| **Researcher**             | `subagent` | Read-only codebase research (`@Researcher`)       |
-| **Software Engineer**      | `subagent` | Implementation                                   |
-| **Code Reviewer**          | `subagent` | Code review                                      |
-| **Security Auditor**       | `subagent` | Security audit                                   |
-| **DevOps Engineer**        | `subagent` | Infrastructure & CI/CD                           |
-| **QA Automation Engineer** | `subagent` | Test automation                                |
-| **Technical Writer**       | `subagent` | Documentation                                    |
-| **Doc Reviewer**           | `subagent` | Documentation review                             |
-| **PRD Critic**             | `subagent` | PRD analysis                                     |
+| Agent                      | Mode       | Description                                     |
+| -------------------------- | ---------- | ----------------------------------------------- |
+| **Coordinator**            | `primary`  | Orchestrates the full SDLC — **only Tab agent** |
+| **Researcher**             | `subagent` | Read-only codebase research (`@Researcher`)     |
+| **Software Engineer**      | `subagent` | Implementation                                  |
+| **Code Reviewer**          | `subagent` | Code review                                     |
+| **Security Auditor**       | `subagent` | Security audit                                  |
+| **DevOps Engineer**        | `subagent` | Infrastructure & CI/CD                          |
+| **QA Automation Engineer** | `subagent` | Test automation                                 |
+| **Technical Writer**       | `subagent` | Documentation                                   |
+| **Doc Reviewer**           | `subagent` | Documentation review                            |
+| **PRD Critic**             | `subagent` | PRD analysis                                    |
 
 ---
 
 ## Troubleshooting
 
-| Problem                               | Solution                                                                                                                                    |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Only Coordinator visible in Tab bar   | **Normal.** Tab shows only `primary` agents. Subagents via `@Software Engineer`, `@Researcher`, etc. — or Coordinator delegates automatically |
-| Which agents are installed?           | `opencode agent list` in the terminal                                                                                                       |
-| Coordinator not in agent list         | Restart OpenCode; run `bash install.sh` again                                                                                               |
-| Skill not visible                     | Folder must be named `parallel-bug-audit`; `SKILL.md` in CAPS; restart OpenCode                                                             |
-| Researcher cannot be dispatched       | Set `task: allow` in Coordinator permissions                                                                                                |
-| Rules ignored                         | Check `instructions` in `opencode.json`; paths relative to project root                                                                     |
-| Wrong model                           | Adjust `model:` in agent frontmatter to available providers                                                                                 |
-| Built-in `build` starts instead       | Set `default_agent: "Coordinator"`; disable `build`/`plan`                                                                                  |
+| Problem                             | Solution                                                                                                                                      |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Only Coordinator visible in Tab bar | **Normal.** Tab shows only `primary` agents. Subagents via `@Software Engineer`, `@Researcher`, etc. — or Coordinator delegates automatically |
+| Which agents are installed?         | `opencode agent list` in the terminal                                                                                                         |
+| Coordinator not in agent list       | Restart OpenCode; run `bash install.sh` again                                                                                                 |
+| Skill not visible                   | Folder must be named `parallel-bug-audit`; `SKILL.md` in CAPS; restart OpenCode                                                               |
+| Researcher cannot be dispatched     | Set `task: allow` in Coordinator permissions                                                                                                  |
+| Rules ignored                       | Check `instructions` in `opencode.json`; paths relative to project root                                                                       |
+| Wrong model                         | Adjust `model:` in agent frontmatter to available providers                                                                                   |
+| Built-in `build` starts instead     | Set `default_agent: "Coordinator"`; disable `build`/`plan`                                                                                    |
 
 ---
 
@@ -344,8 +344,6 @@ opencode-agent/
 ## Origin
 
 The original agent and rules scaffold for [OpenCode](https://opencode.ai) comes from [Tom Kühl](https://github.com/tomkuehl). This repository adapts and extends it and adds `install.sh` / `uninstall.sh`. Further changes are documented in [`changelog.md`](changelog.md).
-
-> Plain links in README and changelog do **not** trigger GitHub notifications — only `@username` mentions in issues or PR comments do.
 
 ---
 
