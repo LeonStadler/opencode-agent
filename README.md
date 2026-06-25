@@ -1,19 +1,19 @@
 # OpenCode Agent Suite
 
-Wiederverwendbare **Agents**, **Rules** und **Skills** für [OpenCode](https://opencode.ai) — orchestriert über den **Coordinator** als zentrale Schnittstelle für Research, Planung, Audit und Ausführung.
+Reusable **agents**, **rules**, and **skills** for [OpenCode](https://opencode.ai) — orchestrated through the **Coordinator** as the central interface for research, planning, audit, and execution.
 
 ```bash
-bash install.sh          # installieren
-bash uninstall.sh        # alles wieder entfernen
+bash install.sh          # install
+bash uninstall.sh        # remove everything
 ```
 
-OpenCode neu starten → `@Coordinator` nutzen.
+Restart OpenCode → use `@Coordinator`.
 
-## Architektur
+## Architecture
 
 ```mermaid
 flowchart TB
-    User([Nutzer]) --> Coordinator
+    User([User]) --> Coordinator
 
     Coordinator --> Researcher
     Coordinator --> SoftwareEngineer[Software Engineer]
@@ -30,79 +30,79 @@ flowchart TB
     Skills["skills/"] --> Coordinator
 ```
 
-**Grundprinzip:** Starte **immer** mit `@Coordinator`. Er untersucht, plant, delegiert und verifiziert — du sprichst nicht direkt mit Implementierungs-Subagents, außer für gezielte Read-only-Research.
+**Core principle:** Always start with `@Coordinator`. It investigates, plans, delegates, and verifies — do not talk directly to implementation subagents except for targeted read-only research.
 
-| Komponente             | Rolle                                                 |
-| ---------------------- | ----------------------------------------------------- |
-| **Coordinator**        | Primary Agent — zentrale Schnittstelle für alles      |
-| **Researcher**         | Read-only Subagent für Codebase-Recherche             |
-| **parallel-bug-audit** | Skill für parallele Bug-/Gap-Audits via Researcher    |
-| **Rules**              | Projektweite Coding-Konventionen                      |
-| **Weitere Subagents**  | Software Engineer, Code Reviewer, Security Auditor, … |
+| Component              | Role                                                       |
+| ---------------------- | ---------------------------------------------------------- |
+| **Coordinator**        | Primary agent — central interface for everything           |
+| **Researcher**         | Read-only subagent for codebase research                   |
+| **parallel-bug-audit** | Skill for parallel bug/gap audits via Researcher           |
+| **Rules**              | Project-wide coding conventions                            |
+| **Other subagents**    | Software Engineer, Code Reviewer, Security Auditor, …      |
 
 ---
 
 ## Installation
 
-Ein Befehl — kopiert **alle Agents, Rules und Skills** aus diesem Repo nach OpenCode.
+One command — copies **all agents, rules, and skills** from this repo into OpenCode.
 
-### Global (empfohlen — gilt in allen Projekten)
+### Global (recommended — applies to all projects)
 
 ```bash
 bash install.sh
 ```
 
-Installiert nach `~/.config/opencode/`:
+Installs to `~/.config/opencode/`:
 
-- `agents/` — alle Agent-Definitionen
-- `rules/` — Coding-Konventionen
-- `skills/` — alle Skills (z. B. `parallel-bug-audit`)
-- `opencode.jsonc` + `AGENTS.md` — Coordinator als Default
+- `agents/` — all agent definitions
+- `rules/` — coding conventions
+- `skills/` — all skills (e.g. `parallel-bug-audit`)
+- `opencode.jsonc` + `AGENTS.md` — Coordinator as default
 
-### Projektspezifisch
+### Project-specific
 
 ```bash
-bash install.sh /pfad/zu/deinem-projekt
+bash install.sh /path/to/your-project
 ```
 
-Installiert nach `.opencode/` im Zielprojekt + legt `opencode.json` an.
+Installs to `.opencode/` in the target project and creates `opencode.json`.
 
 ### Update
 
-Einfach nochmal ausführen — überschreibt die bestehenden Dateien:
+Run again — overwrites existing files:
 
 ```bash
 bash install.sh
 ```
 
-**Deinstallieren** (sauberer Reset vor Neuinstallation):
+**Uninstall** (clean reset before reinstall):
 
 ```bash
 bash uninstall.sh
 ```
 
-Danach **OpenCode neu starten** und mit `@Coordinator` loslegen.
+Then **restart OpenCode** and start with `@Coordinator`.
 
 ---
 
-## Voraussetzungen
+## Prerequisites
 
-1. [OpenCode installiert](https://opencode.ai/docs) (Terminal, Desktop oder IDE)
-2. Mindestens ein LLM-Provider konfiguriert (`/connect` in der TUI)
+1. [OpenCode installed](https://opencode.ai/docs) (terminal, desktop, or IDE)
+2. At least one LLM provider configured (`/connect` in the TUI)
 
 ---
 
-## Einrichtung im Detail
+## Setup in detail
 
-### 1. Coordinator als Default-Agent
+### 1. Coordinator as default agent
 
-Der Coordinator ist der **einzige Einstiegspunkt** für produktive Arbeit. Er übernimmt:
+The Coordinator is the **only entry point** for productive work. It handles:
 
-- **Research** — delegiert an `@Researcher` statt selbst den Context zu füllen
-- **Planung** — schreibt Pläne nach `.opencode/state/current_plan.md`
-- **Ausführung** — delegiert Tasks an Software Engineer, DevOps, …
-- **Audit** — Security Auditor, Code Reviewer, Bug-Audit-Skill
-- **Verifikation** — Convergence-Loops bei REJECTED Reviews
+- **Research** — delegates to `@Researcher` instead of filling context itself
+- **Planning** — writes plans to `.opencode/state/current_plan.md`
+- **Execution** — delegates tasks to Software Engineer, DevOps, …
+- **Audit** — Security Auditor, Code Reviewer, bug-audit skill
+- **Verification** — convergence loops on REJECTED reviews
 
 In `opencode.json`:
 
@@ -116,39 +116,39 @@ In `opencode.json`:
 }
 ```
 
-> Built-in Agents `build` und `plan` deaktivieren, damit nicht versehentlich ohne Orchestrator gearbeitet wird. Passe Modelle in den Agent-Frontmatter-Blöcken an deine Provider an (`model: openai/gpt-5.5` → dein verfügbares Modell).
+> Disable built-in `build` and `plan` agents so work does not accidentally bypass the orchestrator. Adjust `model:` in agent frontmatter to match your providers (`model: openai/gpt-5.5` → your available model).
 
-OpenCode neu starten, dann mit **Tab** prüfen, ob `Coordinator` als Primary Agent ausgewählt ist.
+Restart OpenCode, then use **Tab** to confirm `Coordinator` is selected as the primary agent.
 
 ### 2. Researcher
 
-Der Researcher ist ein **read-only Subagent** (`mode: all`). Er wird vom Coordinator per `task`-Tool oder manuell via `@Researcher` aufgerufen.
+The Researcher is a **read-only subagent** (`mode: subagent`). The Coordinator invokes it via the `task` tool, or you can call it manually with `@Researcher`.
 
-**Installation:** Liegt in `agents/Researcher.md` → wird nach `.opencode/agents/Researcher.md` kopiert.
+**Installation:** lives in `agents/Researcher.md` → copied to `.opencode/agents/Researcher.md`.
 
-**Wichtig:**
+**Important:**
 
-- Keine Schreibrechte — nur `read`, `grep`, `glob`, `list`
-- Jede Aussage braucht `path:line`-Zitate
-- Nie raten — bei fehlenden Ergebnissen: `NO RESULTS FOUND IN CODEBASE`
+- No write permissions — only `read`, `grep`, `glob`, `list`
+- Every claim needs `path:line` citations
+- Never guess — on empty results: `NO RESULTS FOUND IN CODEBASE`
 
-**Typischer Flow:**
-
-```
-@Coordinator Untersuche, wie Auth in diesem Projekt funktioniert
-```
-
-→ Coordinator delegiert an Researcher, synthetisiert den Report, plant weiter.
-
-**Direktaufruf** (nur für isolierte Recherche ohne Planung):
+**Typical flow:**
 
 ```
-@Researcher Wo wird JWT validiert? Zeige alle Entry Points.
+@Coordinator Investigate how auth works in this project
+```
+
+→ Coordinator delegates to Researcher, synthesizes the report, continues planning.
+
+**Direct invocation** (isolated research without planning):
+
+```
+@Researcher Where is JWT validated? Show all entry points.
 ```
 
 ### 3. Rules
 
-Rules definieren Coding-Konventionen. Sie liegen in `rules/` und werden über `opencode.json` eingebunden:
+Rules define coding conventions. They live in `rules/` and are loaded via `opencode.json`:
 
 ```json
 {
@@ -156,30 +156,30 @@ Rules definieren Coding-Konventionen. Sie liegen in `rules/` und werden über `o
 }
 ```
 
-Enthaltene Rules in diesem Repo:
+Rules included in this repo:
 
-| Datei                     | Inhalt                                       |
-| ------------------------- | -------------------------------------------- |
-| `changelog-versioning.md` | Changelog, Version-Bump, Release-Hygiene     |
-| `documentation.md`        | Projekt-Docs, Inline-Docs, `docs/`-Struktur  |
-| `code-quality.md`         | Lint, Build, DRY, Maintainability            |
-| `programming-style.md`    | FP, Typing, Funktionen (allgemein)           |
-| `code-styles.md`          | Architektur-Invarianten (projektspezifisch)  |
-| `error-handling.md`       | Fehler werfen, Kontext, Logging              |
-| `tooling.md`              | Dependencies, Projekt-Environments           |
-| `workflow.md`             | Git, Branches, Issues, Repo-Inspektion       |
-| `react-guidelines.md`     | React-spezifische Konventionen               |
-| `testing.md`              | Test-Philosophie + projektspezifische Regeln |
+| File                      | Content                                              |
+| ------------------------- | ---------------------------------------------------- |
+| `changelog-versioning.md` | Changelog, version bump, release hygiene             |
+| `documentation.md`        | Project docs, inline docs, `docs/` structure         |
+| `code-quality.md`         | Lint, build, DRY, maintainability                   |
+| `programming-style.md`    | FP, typing, functions (general)                      |
+| `code-styles.md`          | Architecture invariants (project-specific)           |
+| `error-handling.md`       | Raising errors, context, logging                     |
+| `tooling.md`              | Dependencies, project environments                   |
+| `workflow.md`             | Git, branches, issues, repo inspection               |
+| `react-guidelines.md`     | React-specific conventions                           |
+| `testing.md`              | Testing philosophy + project-specific rules          |
 
-**Zusätzlich empfohlen:** Projekt-Root `AGENTS.md` via `/init` generieren lassen. OpenCode merged `AGENTS.md` + `instructions` aus `opencode.json`.
+**Also recommended:** generate project-root `AGENTS.md` via `/init`. OpenCode merges `AGENTS.md` with `instructions` from `opencode.json`.
 
-Der Coordinator und Software Engineer referenzieren Rules automatisch in Delegations-Prompts (`.opencode/rules/`, `AGENTS.md`, `docs/_invariants/`).
+The Coordinator and Software Engineer reference rules automatically in delegation prompts (`.opencode/rules/`, `AGENTS.md`, `docs/_invariants/`).
 
-### 4. Bug-Audit-Skill (`parallel-bug-audit`)
+### 4. Bug-audit skill (`parallel-bug-audit`)
 
-Paralleler Bug-/Gap-Audit: Coordinator mappt ein Subsystem, erstellt ein Failure-Mode-Brief, dispatcht mehrere `@Researcher`-Instanzen parallel und konsolidiert die Findings.
+Parallel bug/gap audit: Coordinator maps a subsystem, builds a failure-mode brief, dispatches multiple `@Researcher` instances in parallel, and consolidates findings.
 
-**Installation:** automatisch via `bash install.sh` (liegt in `skills/parallel-bug-audit/`).
+**Installation:** automatic via `bash install.sh` (lives in `skills/parallel-bug-audit/`).
 
 **Permissions in `opencode.json`:**
 
@@ -194,15 +194,15 @@ Paralleler Bug-/Gap-Audit: Coordinator mappt ein Subsystem, erstellt ein Failure
 }
 ```
 
-**Aufruf** (immer über Coordinator):
+**Invocation** (always via Coordinator):
 
 ```
-@Coordinator Audit das Email-Sync-Subsystem auf Bugs und Gaps
+@Coordinator Audit the email sync subsystem for bugs and gaps
 ```
 
-Der Coordinator lädt den Skill, dispatcht parallel Researcher und liefert einen klassifizierten Report (Confirmed Bug / Gap / Suspected / Misleading).
+The Coordinator loads the skill, dispatches parallel Researchers, and returns a classified report (Confirmed Bug / Gap / Suspected / Misleading).
 
-**Cache-Verzeichnis** (gitignored in Zielprojekten):
+**Cache directory** (gitignored in target projects):
 
 ```
 .opencode/.cache/bug-audit/<target>-failure-modes.md
@@ -210,28 +210,28 @@ Der Coordinator lädt den Skill, dispatcht parallel Researcher und liefert einen
 
 ---
 
-## Konfiguration
+## Configuration
 
-Wird automatisch von `install.sh` gesetzt. Templates liegen in `templates/`:
+Set automatically by `install.sh`. Templates live in `templates/`:
 
-| Datei                             | Verwendung                                   |
+| File                              | Usage                                        |
 | --------------------------------- | -------------------------------------------- |
 | `templates/opencode.global.jsonc` | Global → `~/.config/opencode/opencode.jsonc` |
-| `templates/opencode.project.json` | Projekt → `opencode.json`                    |
-| `templates/AGENTS.md`             | Globale/Projekt-Regeln                       |
+| `templates/opencode.project.json` | Project → `opencode.json`                    |
+| `templates/AGENTS.md`             | Global/project rules                         |
 
 ---
 
-## Verzeichnisstruktur (Zielprojekt nach Setup)
+## Directory structure (target project after setup)
 
 ```
-dein-projekt/
-├── AGENTS.md                          # Projekt-spezifische Regeln (/init)
-├── opencode.json                      # OpenCode-Konfiguration
+your-project/
+├── AGENTS.md                          # Project-specific rules (/init)
+├── opencode.json                      # OpenCode configuration
 ├── .opencode/
 │   ├── agents/
-│   │   ├── Coordinator.md             # Primary — immer starten
-│   │   ├── Researcher.md              # Read-only Research
+│   │   ├── Coordinator.md             # Primary — always start here
+│   │   ├── Researcher.md              # Read-only research
 │   │   ├── Software Engineer.md
 │   │   ├── Code Reviewer.md
 │   │   ├── Security Auditor.md
@@ -245,103 +245,113 @@ dein-projekt/
 │   │       ├── SKILL.md
 │   │       └── references/
 │   └── state/
-│       └── current_plan.md            # Laufender Plan (runtime)
+│       └── current_plan.md            # Active plan (runtime)
 └── docs/
-    └── _invariants/                   # Optional: projekt-spezifische Invarianten
+    └── _invariants/                   # Optional: project-specific invariants
 ```
 
 ---
 
-## Workflow-Beispiele
+## Workflow examples
 
-### Feature implementieren
-
-```
-@Coordinator Implementiere User-Notifications mit WebSocket-Push
-```
-
-1. Coordinator kategorisiert (FEATURE), investigiert, schreibt Plan
-2. User approved Plan
-3. Coordinator delegiert Task 1 an Software Engineer
-4. Security Auditor + Code Reviewer prüfen
-5. Nächster Task — bis Completion Report
-
-### Bug fixen
+### Implement a feature
 
 ```
-@Coordinator Der Login schlägt nach Token-Refresh fehl — finde Root Cause und fixe
+@Coordinator Implement user notifications with WebSocket push
 ```
 
-Coordinator führt Bug Root Cause Gate durch, plant Fix am Symptom-Ursprung (nicht am Symptom).
+1. Coordinator categorizes (FEATURE), investigates, writes plan
+2. User approves plan
+3. Coordinator delegates task 1 to Software Engineer
+4. Security Auditor + Code Reviewer review
+5. Next task — until completion report
 
-### Subsystem auditieren
-
-```
-@Coordinator Audit src/sync/ auf echte Bugs und Gaps bevor wir refactoren
-```
-
-Coordinator lädt `parallel-bug-audit`, dispatcht 4–7 parallele Researcher, liefert deduplizierten Report.
-
-### Schnelle Recherche (ohne Plan)
+### Fix a bug
 
 ```
-@Coordinator Wo wird Rate-Limiting konfiguriert? Nur Recherche, kein Code.
+@Coordinator Login fails after token refresh — find root cause and fix
 ```
 
-Coordinator delegiert an Researcher, gibt strukturierten Report zurück — ohne Phase 3 Execution Loop.
+Coordinator runs the bug root-cause gate, plans a fix at the source (not the symptom).
+
+### Audit a subsystem
+
+```
+@Coordinator Audit src/sync/ for real bugs and gaps before we refactor
+```
+
+Coordinator loads `parallel-bug-audit`, dispatches 4–7 parallel Researchers, returns deduplicated report.
+
+### Quick research (no plan)
+
+```
+@Coordinator Where is rate limiting configured? Research only, no code.
+```
+
+Coordinator delegates to Researcher, returns structured report — skips Phase 3 execution loop.
 
 ---
 
-## Enthaltene Agents
+## Included agents
 
-| Agent                      | Mode       | Beschreibung                                            |
-| -------------------------- | ---------- | ------------------------------------------------------- |
-| **Coordinator**            | `primary`  | Orchestriert den gesamten SDLC — **einziger Tab-Agent** |
-| **Researcher**             | `subagent` | Read-only Codebase-Recherche (`@Researcher`)            |
-| **Software Engineer**      | `subagent` | Implementierung                                         |
-| **Code Reviewer**          | `subagent` | Code-Review                                             |
-| **Security Auditor**       | `subagent` | Sicherheits-Audit                                       |
-| **DevOps Engineer**        | `subagent` | Infrastruktur & CI/CD                                   |
-| **QA Automation Engineer** | `subagent` | Test-Automatisierung                                    |
-| **Technical Writer**       | `subagent` | Dokumentation                                           |
-| **Doc Reviewer**           | `subagent` | Dokumentations-Review                                   |
-| **PRD Critic**             | `subagent` | PRD-Analyse                                             |
+| Agent                      | Mode       | Description                                      |
+| -------------------------- | ---------- | ------------------------------------------------ |
+| **Coordinator**            | `primary`  | Orchestrates the full SDLC — **only Tab agent**  |
+| **Researcher**             | `subagent` | Read-only codebase research (`@Researcher`)       |
+| **Software Engineer**      | `subagent` | Implementation                                   |
+| **Code Reviewer**          | `subagent` | Code review                                      |
+| **Security Auditor**       | `subagent` | Security audit                                   |
+| **DevOps Engineer**        | `subagent` | Infrastructure & CI/CD                           |
+| **QA Automation Engineer** | `subagent` | Test automation                                |
+| **Technical Writer**       | `subagent` | Documentation                                    |
+| **Doc Reviewer**           | `subagent` | Documentation review                             |
+| **PRD Critic**             | `subagent` | PRD analysis                                     |
 
 ---
 
 ## Troubleshooting
 
-| Problem                                    | Lösung                                                                                                                                      |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nur Coordinator in der Tab-Leiste sichtbar | **Normal.** Tab zeigt nur `primary`-Agents. Subagents via `@Software Engineer`, `@Researcher` etc. — oder Coordinator delegiert automatisch |
-| Welche Agents sind installiert?            | `opencode agent list` im Terminal                                                                                                           |
-| Coordinator nicht in Agent-Liste           | OpenCode neu starten; `bash install.sh` erneut ausführen                                                                                    |
-| Skill nicht sichtbar                       | Ordner muss `parallel-bug-audit` heißen; `SKILL.md` in CAPS; OpenCode neu starten                                                           |
-| Researcher kann nicht dispatched werden    | `task: allow` in Coordinator-Permissions setzen                                                                                             |
-| Rules werden ignoriert                     | `instructions` in `opencode.json` prüfen; Pfade relativ zum Projekt-Root                                                                    |
-| Falsches Modell                            | `model:` in Agent-Frontmatter an verfügbare Provider anpassen                                                                               |
-| Built-in `build` startet statt Coordinator | `default_agent: "Coordinator"` setzen; `build`/`plan` disable                                                                               |
+| Problem                               | Solution                                                                                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Only Coordinator visible in Tab bar   | **Normal.** Tab shows only `primary` agents. Subagents via `@Software Engineer`, `@Researcher`, etc. — or Coordinator delegates automatically |
+| Which agents are installed?           | `opencode agent list` in the terminal                                                                                                       |
+| Coordinator not in agent list         | Restart OpenCode; run `bash install.sh` again                                                                                               |
+| Skill not visible                     | Folder must be named `parallel-bug-audit`; `SKILL.md` in CAPS; restart OpenCode                                                             |
+| Researcher cannot be dispatched       | Set `task: allow` in Coordinator permissions                                                                                                |
+| Rules ignored                         | Check `instructions` in `opencode.json`; paths relative to project root                                                                     |
+| Wrong model                           | Adjust `model:` in agent frontmatter to available providers                                                                                 |
+| Built-in `build` starts instead       | Set `default_agent: "Coordinator"`; disable `build`/`plan`                                                                                  |
 
 ---
 
-## Repo-Struktur
+## Repo structure
 
 ```
 opencode-agent/
-├── install.sh                 # Ein-Befehl-Installation
-├── uninstall.sh               # Alles wieder entfernen
+├── install.sh                 # One-command install
+├── uninstall.sh               # Remove everything
+├── changelog.md
 ├── README.md
-├── agents/                    # Alle Agent-Definitionen
-├── rules/                     # Coding-Konventionen
+├── agents/                    # All agent definitions
+├── rules/                     # Coding conventions
 ├── skills/
-│   └── parallel-bug-audit/    # Bug-Audit-Skill
-└── templates/                 # opencode.json + AGENTS.md Vorlagen
+│   └── parallel-bug-audit/    # Bug-audit skill
+└── templates/                 # opencode.json + AGENTS.md templates
 ```
 
 ---
 
-## Weiterführend
+## Origin
+
+The original agent and rules scaffold for [OpenCode](https://opencode.ai) comes from [Tom Kühl](https://github.com/tomkuehl). This repository adapts and extends it and adds `install.sh` / `uninstall.sh`. Further changes are documented in [`changelog.md`](changelog.md).
+
+> Plain links in README and changelog do **not** trigger GitHub notifications — only `@username` mentions in issues or PR comments do.
+
+---
+
+## Further reading
 
 - [OpenCode Agents](https://opencode.ai/docs/agents/)
 - [OpenCode Rules](https://opencode.ai/docs/rules/)
 - [OpenCode Skills](https://opencode.ai/docs/skills/)
+- [Changelog](changelog.md)

@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Installiert Agents, Rules und Skills aus diesem Repo nach OpenCode.
+# Install agents, rules, and skills from this repo into OpenCode.
 # Usage:
 #   bash install.sh              → global (~/.config/opencode/)
-#   bash install.sh /mein/projekt → projektspezifisch (.opencode/ + opencode.json)
+#   bash install.sh /my/project  → project-specific (.opencode/ + opencode.json)
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-  echo "Usage: bash install.sh [ZIEL]"
+  echo "Usage: bash install.sh [TARGET]"
   echo ""
-  echo "  (kein Argument)     Global nach ~/.config/opencode/"
-  echo "  /pfad/zu/projekt    Projektspezifisch nach .opencode/"
+  echo "  (no argument)       Global install to ~/.config/opencode/"
+  echo "  /path/to/project    Project-specific install to .opencode/"
   exit 1
 }
 
@@ -31,9 +31,9 @@ else
   usage
 fi
 
-echo "→ Installiere OpenCode Agent Suite ($MODE)"
-echo "  Quelle:  $REPO_ROOT"
-echo "  Ziel:    $DEST"
+echo "→ Installing OpenCode Agent Suite ($MODE)"
+echo "  Source:  $REPO_ROOT"
+echo "  Target:  $DEST"
 echo ""
 
 mkdir -p "$DEST/agents" "$DEST/rules" "$DEST/skills"
@@ -56,11 +56,11 @@ else
   cp "$REPO_ROOT/templates/opencode.project.json" "$CONFIG"
   if [[ ! -f "$PROJECT/AGENTS.md" ]]; then
     cp "$REPO_ROOT/templates/AGENTS.md" "$PROJECT/AGENTS.md"
-    echo "  AGENTS.md angelegt (Projekt-Root)"
+    echo "  Created AGENTS.md (project root)"
   fi
 fi
 
 echo ""
-echo "✓ Fertig. OpenCode neu starten, dann @Coordinator nutzen."
+echo "✓ Done. Restart OpenCode, then use @Coordinator."
 echo ""
 echo "  Agents: $(ls "$DEST/agents" | wc -l | tr -d ' ')  |  Rules: $(ls "$DEST/rules" | wc -l | tr -d ' ')  |  Skills: $(ls "$DEST/skills" | wc -l | tr -d ' ')"

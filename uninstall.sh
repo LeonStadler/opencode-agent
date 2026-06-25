@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Entfernt die via install.sh installierten Agents, Rules und Skills.
+# Remove agents, rules, and skills installed via install.sh.
 # Usage:
 #   bash uninstall.sh              → global (~/.config/opencode/)
-#   bash uninstall.sh /mein/projekt → projektspezifisch (.opencode/ + opencode.json)
+#   bash uninstall.sh /my/project  → project-specific (.opencode/ + opencode.json)
 
 set -euo pipefail
 
 usage() {
-  echo "Usage: bash uninstall.sh [ZIEL]"
+  echo "Usage: bash uninstall.sh [TARGET]"
   echo ""
-  echo "  (kein Argument)     Global aus ~/.config/opencode/ entfernen"
-  echo "  /pfad/zu/projekt    Projektspezifisch aus .opencode/ entfernen"
+  echo "  (no argument)       Remove from ~/.config/opencode/"
+  echo "  /path/to/project    Remove from .opencode/"
   exit 1
 }
 
@@ -29,8 +29,8 @@ else
   usage
 fi
 
-echo "→ Deinstalliere OpenCode Agent Suite ($MODE)"
-echo "  Ziel: $DEST"
+echo "→ Uninstalling OpenCode Agent Suite ($MODE)"
+echo "  Target: $DEST"
 echo ""
 
 if [[ "$MODE" == "global" ]]; then
@@ -43,13 +43,13 @@ if [[ "$MODE" == "global" ]]; then
 }
 EOF
 
-  echo "  agents/, rules/, skills/, AGENTS.md entfernt"
-  echo "  opencode.jsonc zurückgesetzt"
+  echo "  Removed agents/, rules/, skills/, AGENTS.md"
+  echo "  Reset opencode.jsonc"
 else
   rm -rf "$DEST"
   rm -f "$CONFIG"
-  echo "  .opencode/ und opencode.json entfernt"
+  echo "  Removed .opencode/ and opencode.json"
 fi
 
 echo ""
-echo "✓ Fertig. OpenCode neu starten, dann bash install.sh für saubere Neuinstallation."
+echo "✓ Done. Restart OpenCode, then run bash install.sh for a clean reinstall."

@@ -1,10 +1,10 @@
 # OpenCode Agent Suite
 
-Starte **immer** mit `@Coordinator` — zentrale Schnittstelle für Research, Planung, Audit und Ausführung.
+Always start with `@Coordinator` — central interface for research, planning, audit, and execution.
 
-- **Coordinator** — Primary Agent, orchestriert alles
-- **Researcher** — Read-only Codebase-Recherche (wird vom Coordinator delegiert)
-- **parallel-bug-audit** — Skill für parallele Bug-/Gap-Audits
-- **Rules** — Coding-Konventionen in `rules/`
+- **Coordinator** — primary agent, orchestrates everything
+- **Researcher** — read-only codebase research (delegated by Coordinator)
+- **parallel-bug-audit** — skill for parallel bug/gap audits
+- **Rules** — coding conventions in `rules/`
 
-Nicht direkt mit Software Engineer o.ä. starten, außer für gezielte Einzelaufgaben.
+Do not start directly with Software Engineer or similar except for targeted one-off tasks.

@@ -21,7 +21,7 @@
 *.key
 credentials.json
 
-# OpenCode runtime (falls install.sh projektspezifisch in dieses Repo läuft)
+# OpenCode runtime (if install.sh is run project-specifically in this repo)
 .opencode/
 opencode.json
 opencode.jsonc
