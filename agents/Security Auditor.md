@@ -1,7 +1,8 @@
 ---
 description: Adversarial security reviewer. Audits code for vulnerabilities, leaks, and logic flaws.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-sol
+reasoningEffort: high
 temperature: 0.5
 permission:
   read: allow

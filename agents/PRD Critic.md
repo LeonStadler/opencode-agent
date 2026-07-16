@@ -1,7 +1,8 @@
 ---
 description: Critique PRDs for semantic clarity, implementation ambiguity, and product/design/engineering alignment. Pressure-test the draft without requiring code proof for proposals.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-terra
+reasoningEffort: high
 temperature: 0.2
 permission:
   read: allow

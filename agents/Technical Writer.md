@@ -1,7 +1,8 @@
 ---
 description: Write docs interactively in the conversation. PRDs, RFCs, Invariants, ADRs.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-terra
+reasoningEffort: medium
 temperature: 0.2
 permission:
   read: allow

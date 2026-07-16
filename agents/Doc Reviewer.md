@@ -1,7 +1,8 @@
 ---
 description: Review documentation drafted by the Writer agent. Verify current-state claims against code, ADRs, invariants, and templates while calibrating feedback severity appropriately.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-luna
+reasoningEffort: medium
 temperature: 0.2
 permission:
   read: allow

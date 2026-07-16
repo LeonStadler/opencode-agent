@@ -2,6 +2,23 @@
 
 All notable changes to this repository. Format follows `rules/changelog-versioning.md`.
 
+## Version 0.5.0 — 2026-07-16
+
+### Features
+
+- **GPT-5.6 tiered models per agent**: Luna (lightweight), Terra (default), Sol (code/security only) with `low` / `medium` / `high` reasoning — no `max` or `xhigh`
+  - **Luna**: Researcher, Doc Reviewer, DevOps Engineer
+  - **Terra**: Coordinator, Code Reviewer, QA Automation Engineer, Technical Writer, PRD Critic
+  - **Sol**: Software Engineer, Security Auditor
+- **Coordinator permissions**: Explicit `skill`, `task`, `webfetch` allow rules
+
+### Chores
+
+- **Removed global model override** from `templates/opencode.*.json` — models live in agent frontmatter only
+- **`README.md`**: Agent table with model, reasoning, and temperature per role
+
+---
+
 ## Version 0.4.0 — 2026-06-25
 
 ### Features

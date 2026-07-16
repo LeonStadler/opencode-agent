@@ -1,13 +1,17 @@
 ---
 description: Orchestrate the software development lifecycle across specialized agents. Plan, delegate, audit, and verify.
 mode: primary
-model: openai/gpt-5.5
+model: openai/gpt-5.6-terra
+reasoningEffort: high
 temperature: 0.2
 permission:
   read: allow
   grep: allow
   glob: allow
   list: allow
+  skill: allow
+  task: allow
+  webfetch: allow
   write: allow
   bash:
     "*": allow

@@ -1,7 +1,8 @@
 ---
 description: Read-only research subagent. Answer a scoped architectural or implementation question with evidence-cited findings drawn only from the codebase and fetched docs. Invoked by the Coordinator or the user.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-luna
+reasoningEffort: medium
 temperature: 0.2
 permission:
   read: allow

@@ -116,7 +116,7 @@ In `opencode.json`:
 }
 ```
 
-> Disable built-in `build` and `plan` agents so work does not accidentally bypass the orchestrator. Adjust `model:` in agent frontmatter to match your providers (`model: openai/gpt-5.5` → your available model).
+> Disable built-in `build` and `plan` agents so work does not accidentally bypass the orchestrator. Each agent defines its own model and `reasoningEffort` in its frontmatter — see the table below.
 
 Restart OpenCode, then use **Tab** to confirm `Coordinator` is selected as the primary agent.
 
@@ -212,7 +212,7 @@ The Coordinator loads the skill, dispatches parallel Researchers, and returns a 
 
 ## Configuration
 
-Set automatically by `install.sh`. Templates live in `templates/`:
+Set automatically by `install.sh`. Per-agent models and reasoning are defined in each agent's frontmatter (`agents/*.md`). Templates live in `templates/`:
 
 | File                              | Usage                                        |
 | --------------------------------- | -------------------------------------------- |
@@ -294,18 +294,20 @@ Coordinator delegates to Researcher, returns structured report — skips Phase 3
 
 ## Included agents
 
-| Agent                      | Mode       | Description                                     |
-| -------------------------- | ---------- | ----------------------------------------------- |
-| **Coordinator**            | `primary`  | Orchestrates the full SDLC — **only Tab agent** |
-| **Researcher**             | `subagent` | Read-only codebase research (`@Researcher`)     |
-| **Software Engineer**      | `subagent` | Implementation                                  |
-| **Code Reviewer**          | `subagent` | Code review                                     |
-| **Security Auditor**       | `subagent` | Security audit                                  |
-| **DevOps Engineer**        | `subagent` | Infrastructure & CI/CD                          |
-| **QA Automation Engineer** | `subagent` | Test automation                                 |
-| **Technical Writer**       | `subagent` | Documentation                                   |
-| **Doc Reviewer**           | `subagent` | Documentation review                            |
-| **PRD Critic**             | `subagent` | PRD analysis                                    |
+| Agent                      | Mode       | Model           | Reasoning | Temp | Description                                     |
+| -------------------------- | ---------- | --------------- | --------- | ---- | ----------------------------------------------- |
+| **Coordinator**            | `primary`  | `gpt-5.6-terra` | `high`    | 0.2  | Orchestrates the full SDLC — **only Tab agent** |
+| **Researcher**             | `subagent` | `gpt-5.6-luna`  | `medium`  | 0.2  | Read-only codebase research (`@Researcher`)     |
+| **Software Engineer**      | `subagent` | `gpt-5.6-sol`   | `high`    | 0.1  | Implementation                                  |
+| **Code Reviewer**          | `subagent` | `gpt-5.6-terra` | `medium`  | 0.5  | Code review                                     |
+| **Security Auditor**       | `subagent` | `gpt-5.6-sol`   | `high`    | 0.5  | Security audit                                  |
+| **DevOps Engineer**        | `subagent` | `gpt-5.6-luna`  | `low`     | 0.2  | Infrastructure & CI/CD                          |
+| **QA Automation Engineer** | `subagent` | `gpt-5.6-terra` | `medium`  | —    | Test automation                                 |
+| **Technical Writer**       | `subagent` | `gpt-5.6-terra` | `medium`  | 0.2  | Documentation                                   |
+| **Doc Reviewer**           | `subagent` | `gpt-5.6-luna`  | `medium`  | 0.2  | Documentation review                            |
+| **PRD Critic**             | `subagent` | `gpt-5.6-terra` | `high`    | 0.2  | PRD analysis                                    |
+
+> **Tier guide:** **Luna** — fast, cheap (Research, Doc Review, DevOps). **Terra** — everyday workhorse (Coordinator, Review, QA, Docs). **Sol** — only where code/security depth matters (Engineer, Security Auditor). Reasoning stays at `low` / `medium` / `high` — no `max` or `xhigh`.
 
 ---
 
@@ -319,7 +321,7 @@ Coordinator delegates to Researcher, returns structured report — skips Phase 3
 | Skill not visible                   | Folder must be named `parallel-bug-audit`; `SKILL.md` in CAPS; restart OpenCode                                                               |
 | Researcher cannot be dispatched     | Set `task: allow` in Coordinator permissions                                                                                                  |
 | Rules ignored                       | Check `instructions` in `opencode.json`; paths relative to project root                                                                       |
-| Wrong model                         | Adjust `model:` in agent frontmatter to available providers                                                                                   |
+| Wrong model                         | Edit `model:` / `reasoningEffort:` in the agent's frontmatter under `agents/`, then re-run `bash install.sh`                                 |
 | Built-in `build` starts instead     | Set `default_agent: "Coordinator"`; disable `build`/`plan`                                                                                    |
 
 ---
