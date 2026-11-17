@@ -15,9 +15,15 @@ Restart OpenCode → use `@Coordinator`.
 flowchart TB
     User([User]) --> Coordinator
 
+    Coordinator --> Scout
     Coordinator --> Researcher
     Coordinator --> SoftwareEngineer[Software Engineer]
+    Coordinator --> CIEngineer[CI Engineer]
     Coordinator --> DevOps[DevOps Engineer]
+    Coordinator --> Verifier
+    Coordinator --> Advisor
+    Coordinator --> SecurityAdvisor[Security Advisor]
+    Coordinator --> GitOperator[Git Operator]
     Coordinator --> SecurityAuditor[Security Auditor]
     Coordinator --> CodeReviewer[Code Reviewer]
     Coordinator --> QA[QA Automation Engineer]
@@ -35,7 +41,13 @@ flowchart TB
 | Component              | Role                                                  |
 | ---------------------- | ----------------------------------------------------- |
 | **Coordinator**        | Primary agent — central interface for everything      |
+| **Scout**              | Read-only repository map for quick orientation         |
 | **Researcher**         | Read-only subagent for codebase research              |
+| **Verifier**           | Independent check of claims and verification results |
+| **CI Engineer**        | CI pipeline changes with safeguards preserved        |
+| **Git Operator**       | Specific Git writes only when explicitly authorized  |
+| **Advisor**            | Second opinion on high-impact plans                   |
+| **Security Advisor**   | Second opinion on unresolved high-impact security issues |
 | **parallel-bug-audit** | Skill for parallel bug/gap audits via Researcher      |
 | **Rules**              | Project-wide coding conventions                       |
 | **Other subagents**    | Software Engineer, Code Reviewer, Security Auditor, … |
@@ -296,18 +308,24 @@ Coordinator delegates to Researcher, returns structured report — skips Phase 3
 
 | Agent                      | Mode       | Model           | Reasoning | Temp | Description                                     |
 | -------------------------- | ---------- | --------------- | --------- | ---- | ----------------------------------------------- |
-| **Coordinator**            | `primary`  | `gpt-5.6-terra` | `high`    | 0.2  | Orchestrates the full SDLC — **only Tab agent** |
-| **Researcher**             | `subagent` | `gpt-5.6-luna`  | `medium`  | 0.2  | Read-only codebase research (`@Researcher`)     |
-| **Software Engineer**      | `subagent` | `gpt-5.6-sol`   | `high`    | 0.1  | Implementation                                  |
-| **Code Reviewer**          | `subagent` | `gpt-5.6-terra` | `medium`  | 0.5  | Code review                                     |
-| **Security Auditor**       | `subagent` | `gpt-5.6-sol`   | `high`    | 0.5  | Security audit                                  |
-| **DevOps Engineer**        | `subagent` | `gpt-5.6-luna`  | `low`     | 0.2  | Infrastructure & CI/CD                          |
-| **QA Automation Engineer** | `subagent` | `gpt-5.6-terra` | `medium`  | —    | Test automation                                 |
-| **Technical Writer**       | `subagent` | `gpt-5.6-terra` | `medium`  | 0.2  | Documentation                                   |
-| **Doc Reviewer**           | `subagent` | `gpt-5.6-luna`  | `medium`  | 0.2  | Documentation review                            |
-| **PRD Critic**             | `subagent` | `gpt-5.6-terra` | `high`    | 0.2  | PRD analysis                                    |
+| **Coordinator**            | `primary`  | `gpt-6.2-sol`   | `high`    | 0.2  | Orchestrates the full SDLC — **only Tab agent** |
+| **Researcher**             | `subagent` | `gpt-6.2-sol`   | `medium`  | 0.2  | Read-only codebase research (`@Researcher`)     |
+| **Software Engineer**      | `subagent` | `gpt-6.2-sol`   | `high`    | 0.1  | Implementation                                  |
+| **Code Reviewer**          | `subagent` | `gpt-6.2-sol`   | `medium`  | 0.5  | Code review                                     |
+| **Security Auditor**       | `subagent` | `gpt-6.2-sol`   | `high`    | 0.5  | Security audit                                  |
+| **DevOps Engineer**        | `subagent` | `gpt-6.1-terra` | `low`     | 0.2  | Infrastructure and deployment                  |
+| **QA Automation Engineer** | `subagent` | `gpt-6.1-terra` | `medium`  | —    | Test automation                                 |
+| **Technical Writer**       | `subagent` | `gpt-6.2-sol`   | `medium`  | 0.2  | Documentation                                   |
+| **Doc Reviewer**           | `subagent` | `gpt-6.2-sol`   | `medium`  | 0.2  | Documentation review                            |
+| **PRD Critic**             | `subagent` | `gpt-6.2-sol`   | `high`    | 0.2  | PRD analysis                                    |
+| **Scout**                  | `subagent` | `gpt-6.1-terra` | `medium`  | 0.2  | Quick repository mapping                        |
+| **CI Engineer**            | `subagent` | `gpt-6.1-terra` | `high`    | 0.2  | CI pipelines; preserves safety controls         |
+| **Verifier**               | `subagent` | `gpt-6.1-terra` | `high`    | 0.1  | Independent evidence and result checks          |
+| **Git Operator**           | `subagent` | `gpt-6.1-terra` | `medium`  | 0.1  | Explicitly authorized Git actions only           |
+| **Advisor**                | `subagent` | `gpt-6.2-astra` | `high`    | 0.1  | Second opinion on high-impact plans             |
+| **Security Advisor**       | `subagent` | `gpt-6.2-astra` | `high`    | 0.1  | Escalated security findings only                 |
 
-> **Tier guide:** **Luna** — fast, cheap (Research, Doc Review, DevOps). **Terra** — everyday workhorse (Coordinator, Review, QA, Docs). **Sol** — only where code/security depth matters (Engineer, Security Auditor). Reasoning stays at `low` / `medium` / `high` — no `max` or `xhigh`.
+> **Tier guide:** Terra handles operational work such as scouting, CI and Git operations. Sol handles coordination, specialist reviews, research and writing. Astra is reserved for second opinions. Reasoning stays at `low` / `medium` / `high`.
 
 ---
 
@@ -346,6 +364,8 @@ opencode-agent/
 ## Origin
 
 The original agent and rules scaffold for [OpenCode](https://opencode.ai) comes from [Tom Kühl](https://github.com/tomkuehl). This repository adapts and extends it and adds `install.sh` / `uninstall.sh`. Further changes are documented in [`changelog.md`](changelog.md).
+
+Recent workflow improvements were contributed by [Maik (biermann-scale-up-dev)](https://github.com/biermann-scale-up-dev), including the Scout, CI Engineer, Verifier, Git Operator, Advisor, and Security Advisor roles, coordinator routing guidance, and refinements to the parallel audit workflow.
 
 ---
 

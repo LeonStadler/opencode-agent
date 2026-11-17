@@ -1,7 +1,7 @@
 ---
 description: Writes black-box End-to-End (E2E) and public-boundary integration tests strictly from PRDs/RFCs.
 mode: subagent
-model: openai/gpt-5.6-terra
+model: openai/gpt-6.1-terra
 reasoningEffort: medium
 permission:
   read: allow

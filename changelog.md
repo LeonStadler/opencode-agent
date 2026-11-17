@@ -2,6 +2,23 @@
 
 All notable changes to this repository. Format follows `rules/changelog-versioning.md`.
 
+## Version 0.7.0 — 2026-11-17
+
+### Features
+
+- Added `agents/Scout.md`, `agents/CI Engineer.md`, `agents/Verifier.md`, `agents/Git Operator.md`, `agents/Advisor.md`, and `agents/Security Advisor.md` for repository mapping, pipeline work, verification, authorized Git actions, and scoped second opinions.
+- Updated `agents/Coordinator.md` to route work to the new agents and reserve second opinions for high-impact plans or unresolved security decisions.
+- Refined `skills/parallel-bug-audit/SKILL.md` to use Scout for repository mapping and match parallel investigation count to the scope.
+
+### Chores
+
+- Updated model assignments in `agents/Coordinator.md`, `agents/Researcher.md`, `agents/Software Engineer.md`, `agents/Code Reviewer.md`, `agents/Security Auditor.md`, `agents/DevOps Engineer.md`, `agents/QA Automation Engineer.md`, `agents/Technical Writer.md`, `agents/Doc Reviewer.md`, and `agents/PRD Critic.md` to the current GPT-6 model tiers.
+
+### Docs
+
+- Updated `README.md` with the current roles, model routing, and attribution for Maik's contributions.
+- Updated `templates/AGENTS.md` to list the new roles.
+
 ## Version 0.5.0 — 2026-07-16
 
 ### Features
