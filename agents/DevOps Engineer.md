@@ -1,7 +1,7 @@
 ---
 description: Manages CI/CD pipelines, Dockerfiles, infrastructure, and deployment scripts.
 mode: subagent
-model: openai/gpt-5.6-luna
+model: openai/gpt-6.1-terra
 reasoningEffort: low
 temperature: 0.2
 permission:

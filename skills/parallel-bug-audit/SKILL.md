@@ -47,7 +47,7 @@ the same on a sync engine, an auth flow, a parser, or a scheduler.
 1. **Map** the subsystem so the audit is grounded in its real layout.
 2. **Brief** — build a target-specific failure-mode brief (the bug classes this
    _kind_ of subsystem is prone to).
-3. **Carve** 4–7 disjoint angles from the brief.
+3. **Carve** two or three disjoint angles from the brief; use one Researcher when the scope yields one question.
 4. **Dispatch** one Researcher per angle, each with a self-contained prompt.
 5. **Consolidate & verify** the reports into one classified bug/gap list.
 
@@ -66,7 +66,8 @@ shallow — you are drawing boundaries, not auditing.
   to, where it persists state. Use `grep`/`glob`/`explore` — don't hunt bugs yet.
 - Note the **architecture seams**: source of truth, where state lives, trust
   boundaries, what runs concurrently, what retries.
-- Capture a short inventory: `path/to/file.ts` → one line on its role. You'll
+- Capture a short inventory: `path/to/file.ts` → one line on its role. Ask Scout
+  for a compact map when useful, then verify its references. You'll
   paste the relevant slice into each Researcher's prompt so it doesn't have to
   rediscover the layout.
 
@@ -115,11 +116,11 @@ seed lens menu to start from, and worked carving examples across domains.
 
 ## Phase 3 — Carve disjoint angles
 
-Carve the brief into 4–7 **disjoint** angles whose union covers the failure
+Carve the brief into two or three **disjoint** angles whose union covers the failure
 surface. Coverage must be **additive**: each Researcher owns a distinct slice,
-overlap is minimal, nothing is left uncovered. Scale the count to the subsystem
-— small handler → 3–4; full engine → 6–7. Beyond ~7 hits diminishing returns and
-burns budget; below 4 tends to leave a bug class uncovered.
+overlap is minimal, nothing is left uncovered. Use a single Researcher when the
+scope has only one independent question. Add more angles only when each covers a
+materially separate failure surface.
 
 Pick whichever decomposition makes angles most disjoint for _this_ target (often
 a combination):
@@ -139,7 +140,8 @@ reachable stubs. Put this in every prompt.
 ## Phase 4 — Dispatch the Researchers
 
 Call the `task` tool once per angle with `subagent: Researcher`. **Issue the
-calls together in one turn** so they run as independent parallel investigations.
+calls together in one turn** when there are independent questions so they run as
+parallel investigations.
 
 The critical constraint: **a subagent runs in an isolated child session and sees
 _only_ the prompt you give it.** It does not inherit this conversation, your map,

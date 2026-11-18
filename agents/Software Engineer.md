@@ -1,7 +1,7 @@
 ---
 description: Write and edit code to implement features based on RFCs and instructions from the Coordinator.
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6.2-sol
 reasoningEffort: high
 temperature: 0.1
 permission:

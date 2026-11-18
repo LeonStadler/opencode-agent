@@ -1,7 +1,7 @@
 ---
 description: Review code changes, run tests, check against invariants, and approve or reject implementations.
 mode: subagent
-model: openai/gpt-5.6-terra
+model: openai/gpt-6.2-sol
 reasoningEffort: medium
 temperature: 0.5
 permission:
